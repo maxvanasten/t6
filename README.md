@@ -10,7 +10,7 @@ I'm always interested in fun mod ideas so that I can improve my modding skills, 
 
 You can download a mod or script by either clicking on the mod.zip or script.gsc file and clicking the "download raw file" button on github.
 
-[example](!example.png)
+![example](example.png)
 
 ## Installing mods
 
