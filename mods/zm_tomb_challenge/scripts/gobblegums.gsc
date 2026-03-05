@@ -75,7 +75,7 @@ ttg_init()
 	self.gobblegum_list[self.gobblegum_list.size] = "perkdrop";
 	self.gobblegum_list[self.gobblegum_list.size] = "weapon_upgrade";
 	self.gobblegum_list[self.gobblegum_list.size] = "perkaholic";
-
+	self.perk_list = [];
     self.perk_list[self.perk_list.size] = "specialty_quickrevive";
 	self.perk_list[self.perk_list.size] = "specialty_deadshot";
 	self.perk_list[self.perk_list.size] = "specialty_fastreload";
