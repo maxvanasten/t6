@@ -74,6 +74,16 @@ ttg_init()
 	self.gobblegum_list[self.gobblegum_list.size] = "multiplier";
 	self.gobblegum_list[self.gobblegum_list.size] = "perkdrop";
 	self.gobblegum_list[self.gobblegum_list.size] = "weapon_upgrade";
+	self.gobblegum_list[self.gobblegum_list.size] = "perkaholic";
+
+    self.perk_list[self.perk_list.size] = "specialty_quickrevive";
+	self.perk_list[self.perk_list.size] = "specialty_deadshot";
+	self.perk_list[self.perk_list.size] = "specialty_fastreload";
+	self.perk_list[self.perk_list.size] = "specialty_armorvest";
+	self.perk_list[self.perk_list.size] = "specialty_longersprint";
+	self.perk_list[self.perk_list.size] = "specialty_rof";
+	self.perk_list[self.perk_list.size] = "specialty_grenadepulldeath";
+
 	self.gpp_ui_gg_hud = createFontString("objective", 1.5);
 	self.gpp_ui_gg_hud setPoint("CENTER", "CENTER", -225, -160);
 	self.gpp_ui_gg_hud.alpha = 1;
@@ -112,6 +122,9 @@ ttg_update()
 					self thread hud_activation("Pack-a-Punches the current weapon", 7, true);
 					self thread gg_weapon_upgrade();
 					break;
+				case "perkaholic":
+					self thread hud_activation("Gives all perks to the player", 7, true);
+					self thread gg_perkaholic();
 				default:
 			}
 			self.gobblegum_identifier = "none";
@@ -189,6 +202,9 @@ get_gobblegum_name(identifier)
 		case "weapon_upgrade":
 			return "Weapon upgrade";
 			break;
+		case "perkaholic":
+			return "Perkaholic";
+			break;
 		default:
 			return "None";
 	}
@@ -238,6 +254,14 @@ gg_weapon_upgrade()
 		self giveweapon( upgraded_weapon, 0, self maps\mp\zombies\_zm_weapons::get_pack_a_punch_weapon_options( upgraded_weapon ) );
 		self givestartammo( upgraded_weapon );
 		self switchtoweapon( upgraded_weapon );
+	}
+	self.gobblegum_cooldown = 10;
+}
+
+gg_perkaholic()
+{
+	for (i = 0; i < self.perk_list.size; i++) {
+		self maps\mp\zombies\_zm_perks::give_perk(self.perk_list[i])
 	}
 	self.gobblegum_cooldown = 10;
 }
