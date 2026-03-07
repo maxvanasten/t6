@@ -2,33 +2,27 @@
 #include maps\mp\gametypes_zm\_hud_util;
 init()
 {
-    level thread onPlayerConnect();
+	level thread onPlayerConnect();
 }
-
 onPlayerConnect()
 {
-    for ( ;; )
-    {
-        level waittill("connecting", player);
-        player thread onPlayerSpawned();
-    }
+	for ( ;; )
+	{
+		level waittill("connecting", player);
+		player thread onPlayerSpawned();
+	}
 }
-
 onPlayerSpawned()
 {
-    self endon("disconnect");
-
-    flag_wait("initial_blackscreen_passed");
-
-    self thread ttg_init();
-
-    for ( ;; )
-    {
-        self thread ttg_update();
-        wait 0.05;
-    }
+	self endon("disconnect");
+	flag_wait("initial_blackscreen_passed");
+	self thread ttg_init();
+	for ( ;; )
+	{
+		self thread ttg_update();
+		wait 0.05;
+	}
 }
-
 ttg_init()
 {
 	self iPrintLn("[^2origins-spawnroom-challenge^7] This script was made using ts_gsc, the TypeScript to GSC transpiler! (^5https://github.com/maxvanasten/ts_gsc^7)");
@@ -109,12 +103,11 @@ ttg_init()
 	replaceFunc(maps\mp\zm_tomb_capture_zones::get_progress_rate, ::get_progress_rate);
 	self thread handle_round_change();
 }
-
 ttg_update()
 {
-	self givemaxammo( self getcurrentweapon() );
+	self givemaxammo(self getcurrentweapon());
 	self thread check_kills();
-	if (self.weapon_kills >= (10 + (self.gun_index * 2)) && !self.finished)
+	if (self.weapon_kills >= 10 + self.gun_index * 2 && !self.finished)
 	{
 		if (self.gun_index >= self.gungame_weapons.size - 1)
 		{
@@ -141,34 +134,33 @@ ttg_update()
 		self thread update_hud_weapon();
 	}
 }
-
 next_weapon()
 {
 	self.weapon_kills = 0;
 	weaponslist = self getweaponslist();
-	for (i = 0; i < weaponslist.size; i++)
+	for (i = 0; i < weaponslist.size; i = i + 1)
 	{
 		if (weaponslist[i] != "knife_zm")
 		{
 			self takeweapon(weaponslist[i]);
 		}
 	}
-	self.gun_index += 1;
+	self.gun_index = self.gun_index + 1;
 	self giveWeapon(self.gungame_weapons[self.gun_index]);
 }
-
 player_wins()
 {
 	self.finished = 1;
 	self iprintlnbold("You have won the challenge!");
 	self give_completed_loadout();
 }
-
+// Todo: Create helper for upgrading weapons
+// Currently, staffs dont upgrade properly and camos dont apply sometimes
 give_completed_loadout()
 {
 	self maps\mp\zombies\_zm_perks::give_perk("specialty_additionalprimaryweapon");
 	weaponslist = self getweaponslist();
-	for (i = 0; i < weaponslist.size; i++)
+	for (i = 0; i < weaponslist.size; i = i + 1)
 	{
 		if (weaponslist[i] != "knife_zm")
 		{
@@ -179,7 +171,6 @@ give_completed_loadout()
 	self giveWeapon("python_upgraded_zm");
 	self giveWeapon("staff_air_zm");
 }
-
 player_revived_monitor()
 {
 	while (true)
@@ -192,18 +183,16 @@ player_revived_monitor()
 		wait 0.5;
 	}
 }
-
 check_kills()
 {
 	self.kills_diff = self.kills - self.temp_kills;
 	if (self.kills_diff > 0)
 	{
 		self.temp_kills = self.kills;
-		self.weapon_kills += self.kills_diff;
+		self.weapon_kills = self.weapon_kills + self.kills_diff;
 		self.kills_diff = 0;
 	}
 }
-
 update_hud_total_kills()
 {
 	if (self.gpp_ui_osc_hud_total_kills.stored_value != self.kills)
@@ -213,17 +202,15 @@ update_hud_total_kills()
 	}
 	wait 0.5;
 }
-
 update_hud_weapon_kills()
 {
-	if (self.gpp_ui_osc_hud_weapon_kills.stored_value != (10 + (self.gun_index*2)) - self.weapon_kills)
+	if (self.gpp_ui_osc_hud_weapon_kills.stored_value != 10 + self.gun_index * 2 - self.weapon_kills)
 	{
-		self.gpp_ui_osc_hud_weapon_kills setValue((10 + (self.gun_index*2)) - self.weapon_kills);
-		self.gpp_ui_osc_hud_weapon_kills.stored_value = (10 + (self.gun_index*2)) - self.weapon_kills;
+		self.gpp_ui_osc_hud_weapon_kills setValue(10 + self.gun_index * 2 - self.weapon_kills);
+		self.gpp_ui_osc_hud_weapon_kills.stored_value = 10 + self.gun_index * 2 - self.weapon_kills;
 	}
 	wait 0.5;
 }
-
 update_hud_weapon()
 {
 	if (self.gpp_ui_osc_hud_weapon.stored_value != 27 - self.gun_index)
@@ -233,12 +220,10 @@ update_hud_weapon()
 	}
 	wait 0.5;
 }
-
 get_generator_capture_start_cost()
 {
 	return 0;
 }
-
 reward_players_in_capture_zone()
 {
 	if (!self maps\mp\zombies\_zm_utility::ent_flag("player_controlled"))
@@ -249,7 +234,6 @@ reward_players_in_capture_zone()
 		}
 	}
 }
-
 handle_round_change()
 {
 	while (true)
@@ -260,10 +244,9 @@ handle_round_change()
 		wait 0.5;
 	}
 }
-
 player_handler()
 {
-	self.b_challenge_exists = maps\mp\zombies\_zm_challenges::challenge_exists ("zc_zone_captures");
+	self.b_challenge_exists = maps\mp\zombies\_zm_challenges::challenge_exists("zc_zone_captures");
 	self notify("completed_zone_capture");
 	self maps\mp\zombies\_zm_score::player_add_points("bonus_points_powerup", 100);
 	if (self.b_challenge_exists)
@@ -281,7 +264,7 @@ player_handler()
 	{
 		self.upgraded_weapon_name = maps\mp\zombies\_zm_weapons::get_upgrade_weapon(self getcurrentweapon(), 1);
 		weaponslist = self getweaponslist();
-		for (i = 0; i < weaponslist.size; i++)
+		for (i = 0; i < weaponslist.size; i = i + 1)
 		{
 			if (weaponslist[i] != "knife_zm")
 			{
@@ -295,7 +278,6 @@ player_handler()
 		self give_random_perk();
 	}
 }
-
 check_perk(perk_name)
 {
 	if (!self hasPerk(perk_name))
@@ -303,7 +285,6 @@ check_perk(perk_name)
 		self.all_perks = false;
 	}
 }
-
 give_random_perk()
 {
 	self.random_perk = random(self.perk_list);
@@ -316,7 +297,6 @@ give_random_perk()
 		self maps\mp\zombies\_zm_perks::give_perk(self.random_perk);
 	}
 }
-
 get_progress_rate(n_players_in_zone)
 {
 	if (n_players_in_zone > 0)
@@ -328,4 +308,3 @@ get_progress_rate(n_players_in_zone)
 		return -0.5;
 	}
 }
-
