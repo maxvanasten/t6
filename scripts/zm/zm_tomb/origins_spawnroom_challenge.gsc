@@ -1,5 +1,6 @@
 #include common_scripts\utility;
 #include maps\mp\gametypes_zm\_hud_util;
+#include zm\maxlib;
 init()
 {
 	level thread onPlayerConnect();
@@ -149,14 +150,7 @@ ttg_update()
 next_weapon()
 {
 	self.weapon_kills = 0;
-	weaponslist = self getweaponslist();
-	for (i = 0; i < weaponslist.size; i = i + 1)
-	{
-		if (weaponslist[i] != "knife_zm")
-		{
-			self takeweapon(weaponslist[i]);
-		}
-	}
+	self ml_take_all_weapons();
 
 	self.gun_index = self.gun_index + 1;
 	self giveWeapon(self.gungame_weapons[self.gun_index]);
@@ -171,15 +165,10 @@ player_wins()
 
 give_completed_loadout()
 {
+	// Give player mule kick
 	self maps\mp\zombies\_zm_perks::give_perk("specialty_additionalprimaryweapon");
-	weaponslist = self getweaponslist();
-	for (i = 0; i < weaponslist.size; i = i + 1)
-	{
-		if (weaponslist[i] != "knife_zm")
-		{
-			self takeweapon(weaponslist[i]);
-		}
-	}
+
+	self ml_take_all_weapons();
 
 	self giveWeapon("galil_upgraded_zm");
 	self giveWeapon("python_upgraded_zm");
@@ -286,24 +275,14 @@ player_handler()
 	self.all_perks = true;
 	foreach (perk_name in self.perk_list)
 	{
-		check_perk(perk_name);
+		self check_perk(perk_name);
 	}
 
 	if (self.all_perks)
 	{
 		if (self.gun_index <= 21)
 		{
-			self.upgraded_weapon_name = maps\mp\zombies\_zm_weapons::get_upgrade_weapon(self getcurrentweapon(), 1);
-			weaponslist = self getweaponslist();
-			for (i = 0; i < weaponslist.size; i = i + 1)
-			{
-				if (weaponslist[i] != "knife_zm")
-				{
-					self takeweapon(weaponslist[i]);
-				}
-			}
-		
-			self giveWeapon(self.upgraded_weapon_name);
+			self ml_upgrade_weapon();
 		}
 	}
 

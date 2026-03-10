@@ -1,0 +1,29 @@
+[
+  {
+    "name": "zm_tomb_challenge",
+    "desc": "An origins spawnroom gungame challenge.",
+    "author": "HasjBlok",
+    "version": "0.7",
+    "scripts": [
+      {
+        "output": "zm/zm_tomb/gobblegums.gsc",
+        "input": [
+          "zm/gobblegums.gsc"
+        ]
+      },
+      {
+        "output": "zm/zm_tomb/health_and_zombie_counter.gsc",
+        "input": [
+          "zm/health_and_zombie_counter.gsc"
+        ]
+      },
+      {
+        "output": "zm/zm_tomb/challenge.gsc",
+        "input": [
+          "zm/maxlib.gsc",
+          "zm/zm_tomb/zm_tomb_challenge.gsc"
+        ]
+      }
+    ]
+  }
+]
