@@ -238,7 +238,7 @@ update_text(text)
 	if (self.stored_text != text)
 	{
 		self setText(text);
-		self.stored_text = test;
+		self.stored_text = text;
 	}
 }
 
