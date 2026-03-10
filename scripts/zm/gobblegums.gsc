@@ -250,7 +250,7 @@ create_text(font_size, xoffset, yoffset, text)
 	hud_elem.hidewheninmenu = true;
 	hud_elem.hidewhendead = true;
 	hud_elem.color = (1, 1, 1);
-	hud_elem setText();
+	hud_elem setText(text);
 	hud_elem.stored_text = text;
 	return hud_elem;
 }
