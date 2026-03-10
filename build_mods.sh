@@ -16,7 +16,14 @@ add_script() {
 	cp ./scripts/$2/$3 ./mods/$1/scripts/$2/$3
 }
 
+zip_mod() {
+	echo "[build_mods] Zipping mod"
+	zip -r $1.zip ./mods/$1
+	mv $1.zip ./mods/$1
+}
+
 create_mod zm_tomb_challenge zm "Origins spawnroom gungame challenge."
 add_script zm_tomb_challenge zm gobblegums.gsc
 add_script zm_tomb_challenge zm health_and_zombie_counter.gsc
 add_script zm_tomb_challenge zm/zm_tomb origins_spawnroom_challenge.gsc
+zip_mod zm_tomb_challenge
