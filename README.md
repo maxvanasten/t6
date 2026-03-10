@@ -9,7 +9,7 @@ I'm always interested in fun mod ideas so that I can improve my modding skills, 
 ## Downloading mods/scripts
 
 You can download mods/scripts individually by clicking on `download raw file` when clicking on the file you want to download.
-Raw scripts can be found in `./scripts`. Mods can be found in .zip format in `./mods`.
+Raw scripts can be found in `./scripts`. Mods can be found in .zip format in `./mods/<specific mod>`.
 
 ## Installing mods
 
