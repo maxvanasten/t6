@@ -59,7 +59,7 @@ ttg_init()
 	self.powerup_list = array("nuke", "insta_kill", "full_ammo", "double_points", "carpenter", "fire_sale", "free_perk");
 	self.gobblegum_list = array("in_plain_sight", "resupply", "multiplier", "perkdrop", "weapon_upgrade");
 	self.gg_hud_name = create_text(1.2, -225, -160, "");
-	self.gg_hud_desc = create_text(1, -225, -145, "");
+	self.gg_hud_desc = create_text(1, -225, -145, "No gobblegum.");
 	self.gobblegum = get_gobblegum("");
 }
 
@@ -95,7 +95,7 @@ setup_gobblegum_machine(x, y, z)
 		trigger_gobblegum waittill("trigger", player);
 		if (player usebuttonpressed())
 		{
-			if (player.last_gobblegum_round != level.round_number)
+			if (player.last_gobblegum_round != level.round_number && player.gobblegum.name != "")
 			{
 				player thread buy_gobblegum();
 				wait 0.5;
@@ -133,18 +133,11 @@ activate_gobblegum()
 
 buy_gobblegum()
 {
-	if (self.gobblegum.name == "")
-	{
-		self.last_gobblegum_round = level.round_number;
-		self.gobblegum = get_random_gobblegum();
-		self.gg_hud_name update_text("^5(AIM + F): ^7" + self.gobblegum.name);
-		self.gg_hud_desc update_text(self.gobblegum.desc);
-		self iprintlnbold("You have received a gobblegum. (" + self.gobblegum.name + ")");
-	}
-	else
-	{
-		self iprintlnbold("You already have a gobblegum!");
-	}
+	self.last_gobblegum_round = level.round_number;
+	self.gobblegum = get_random_gobblegum();
+	self.gg_hud_name update_text("^5(AIM + F): ^7" + self.gobblegum.name);
+	self.gg_hud_desc update_text(self.gobblegum.desc);
+	self iprintlnbold("You have received a gobblegum. (" + self.gobblegum.name + ")");
 }
 
 get_random_gobblegum()
@@ -244,7 +237,9 @@ update_text(text)
 			self setText(text);
 			self.stored_text = text;
 		}
-	} else {
+	}
+	else
+	{
 		self setText("");
 		self.stored_text = "";
 	}
