@@ -29,11 +29,6 @@ onPlayerSpawned()
 ttg_init()
 {
 	self iPrintLn("[^2gobblegums^7] This script was made using ts_gsc, the TypeScript to GSC transpiler! (^5https://github.com/maxvanasten/ts_gsc^7)");
-	level._model = [];
-	foreach (model in getentarray("script_model", "classname"))
-	{
-		model get_model();
-	}
 	gobblegum_pos = (0, 0, 0);
 	switch(tolower(getdvar(#"mapname"))) {
 		case "zm_tomb":
@@ -58,8 +53,10 @@ ttg_init()
 	self.last_gobblegum_round = -1;
 	self.powerup_list = array("nuke", "insta_kill", "full_ammo", "double_points", "carpenter", "fire_sale", "free_perk");
 	self.gobblegum_list = array("in_plain_sight", "resupply", "multiplier", "perkdrop", "weapon_upgrade");
-	self.gg_hud_name = create_text(1.2, -225, -160, "");
-	self.gg_hud_desc = create_text(1, -225, -145, "");
+	self.gg_hud_name = create_text(1.2, 0, 150, "");
+	self.gg_hud_desc = create_text(1, 0, 160, "no gobblegum");
+	self.gobblegum = spawnstruct();
+	self.gobblegum get_gobblegum("");
 }
 
 ttg_update()
@@ -72,7 +69,7 @@ ttg_update()
 			self thread activate_gobblegum();
 			self.gobblegum.name = "";
 			self.gg_hud_name update_text("");
-			self.gg_hud_desc update_text("");
+			self.gg_hud_desc update_text("no gobblegum");
 		}
 	}
 	else
@@ -88,7 +85,6 @@ setup_gobblegum_machine(x, y, z)
 	trigger_gobblegum = spawn("trigger_radius", (x, y, z + 30), 0, 50, 50);
 	trigger_gobblegum setCursorHint("HINT_NOICON");
 	trigger_gobblegum setHintString("^3[{+activate}]^7 to get a gobblegum.");
-	entities = getEntArray("script_model", "");
 	while (true)
 	{
 		trigger_gobblegum waittill("trigger", player);
@@ -135,7 +131,8 @@ buy_gobblegum()
 	if (self.gobblegum.name == "")
 	{
 		self.last_gobblegum_round = level.round_number;
-		self.gobblegum = get_random_gobblegum();
+		identifier = random(self.gobblegum_list);
+		self.gobblegum get_gobblegum(identifier);
 		self.gg_hud_name update_text("^5(AIM + F): ^7" + self.gobblegum.name);
 		self.gg_hud_desc update_text(self.gobblegum.desc);
 		self iprintlnbold("You have received a gobblegum. (" + self.gobblegum.name + ")");
@@ -146,50 +143,34 @@ buy_gobblegum()
 	}
 }
 
-get_random_gobblegum()
-{
-	identifier = random(self.gobblegum_list);
-	gobblegum = get_gobblegum(identifier);
-}
-
 get_gobblegum(identifier)
 {
-	gobblegum = spawnStruct();
-	gobblegum.identifier = identifier;
+	self.identifier = identifier;
+	self.cooldown = 0;
 	switch(identifier) {
 		case "in_plain_sight":
-			gobblegum.name = "In plain sight";
-			gobblegum.desc = "Zombies ignore the player for 10s";
+			self.name = "In plain sight";
+			self.desc = "Zombies ignore the player for 10s";
 			break;
 		case "resupply":
-			gobblegum.name = "Resupply";
-			gobblegum.desc = "Drops a max ammo";
+			self.name = "Resupply";
+			self.desc = "Drops a max ammo";
 			break;
 		case "multiplier":
-			gobblegum.name = "Multiplier";
-			gobblegum.desc = "Drops a double points";
+			self.name = "Multiplier";
+			self.desc = "Drops a double points";
 			break;
 		case "perkdrop":
-			gobblegum.name = "Perk drop";
-			gobblegum.desc = "Drops a free perk";
+			self.name = "Perk drop";
+			self.desc = "Drops a free perk";
 			break;
 		case "weapon_upgrade":
-			gobblegum.name = "Weapon upgrade";
-			gobblegum.desc = "PaP your current weapon";
+			self.name = "Weapon upgrade";
+			self.desc = "PaP your current weapon";
 			break;
 		default:
-			gobblegum.name = "";
-			gobblegum.dec = "";
-	}
-	return gobblegum;
-}
-
-get_model()
-{
-	if (!isinarray(level._model, self.model))
-	{
-		level._model[level._model.size] = self.model;
-		print("Model: " + self.model);
+			self.name = "";
+			self.dec = "no gobblegum";
 	}
 }
 
