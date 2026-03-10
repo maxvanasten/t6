@@ -1,5 +1,6 @@
 #include common_scripts\utility;
 #include maps\mp\gametypes_zm\_hud_util;
+#include maps\mp\zombies\_zm_perks;
 init()
 {
 	level thread onPlayerConnect();
@@ -294,7 +295,7 @@ give_random_perk()
 	}
 	else
 	{
-		self maps\mp\zombies\_zm_perks::give_perk(self.random_perk);
+		self give_perk(self.random_perk);
 	}
 }
 get_progress_rate(n_players_in_zone)
