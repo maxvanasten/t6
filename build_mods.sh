@@ -18,6 +18,7 @@ add_script() {
 
 zip_mod() {
 	echo "[build_mods] Zipping mod"
+	rm -rf ./mods/$1/$1.zip
 	zip -r $1.zip ./mods/$1
 	mv $1.zip ./mods/$1
 }

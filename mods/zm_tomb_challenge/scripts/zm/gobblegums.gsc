@@ -2,38 +2,35 @@
 #include maps\mp\gametypes_zm\_hud_util;
 init()
 {
-    level thread onPlayerConnect();
+	level thread onPlayerConnect();
 }
 
 onPlayerConnect()
 {
-    for ( ;; )
-    {
-        level waittill("connecting", player);
-        player thread onPlayerSpawned();
-    }
+	for ( ;; )
+	{
+		level waittill("connecting", player);
+		player thread onPlayerSpawned();
+	}
 }
 
 onPlayerSpawned()
 {
-    self endon("disconnect");
-
-    flag_wait("initial_blackscreen_passed");
-
-    self thread ttg_init();
-
-    for ( ;; )
-    {
-        self thread ttg_update();
-        wait 0.05;
-    }
+	self endon("disconnect");
+	flag_wait("initial_blackscreen_passed");
+	self thread ttg_init();
+	for ( ;; )
+	{
+		self thread ttg_update();
+		wait 0.05;
+	}
 }
 
 ttg_init()
 {
 	self iPrintLn("[^2gobblegums^7] This script was made using ts_gsc, the TypeScript to GSC transpiler! (^5https://github.com/maxvanasten/ts_gsc^7)");
 	level._model = [];
-	foreach (model in getentarray( "script_model", "classname" ))
+	foreach (model in getentarray("script_model", "classname"))
 	{
 		model get_model();
 	}
@@ -59,67 +56,28 @@ ttg_init()
 	level thread setup_gobblegum_machine(gobblegum_pos[0], gobblegum_pos[1], gobblegum_pos[2]);
 	self.gobblegum_cooldown = 0;
 	self.last_gobblegum_round = -1;
-	print("Setting player arrays");
-	self.powerup_list = [];
-	self.powerup_list[self.powerup_list.size] = "nuke";
-	self.powerup_list[self.powerup_list.size] = "insta_kill";
-	self.powerup_list[self.powerup_list.size] = "full_ammo";
-	self.powerup_list[self.powerup_list.size] = "double_points";
-	self.powerup_list[self.powerup_list.size] = "carpenter";
-	self.powerup_list[self.powerup_list.size] = "fire_sale";
-	self.powerup_list[self.powerup_list.size] = "free_perk";
-	self.gobblegum_list = [];
-	self.gobblegum_list[self.gobblegum_list.size] = "in_plain_sight";
-	self.gobblegum_list[self.gobblegum_list.size] = "resupply";
-	self.gobblegum_list[self.gobblegum_list.size] = "multiplier";
-	self.gobblegum_list[self.gobblegum_list.size] = "perkdrop";
-	self.gobblegum_list[self.gobblegum_list.size] = "weapon_upgrade";
-	self.gpp_ui_gg_hud = createFontString("objective", 1.5);
-	self.gpp_ui_gg_hud setPoint("CENTER", "CENTER", -225, -160);
-	self.gpp_ui_gg_hud.alpha = 1;
-	self.gpp_ui_gg_hud.hidewheninmenu = true;
-	self.gpp_ui_gg_hud.hidewhendead = true;
-	self.gpp_ui_gg_hud.color = (1, 1, 1);
-	self.gpp_ui_gg_hud setText("^6No gobblegum");
-	self.gpp_ui_gg_hud.stored_text = "^6No gobblegum";
+	self.powerup_list = array("nuke", "insta_kill", "full_ammo", "double_points", "carpenter", "fire_sale", "free_perk");
+	self.gobblegum_list = array("in_plain_sight", "resupply", "multiplier", "perkdrop", "weapon_upgrade");
+	self.gg_hud_name = create_text(1.2, -225, -160, "");
+	self.gg_hud_desc = create_text(1, -225, -145, "");
 }
 
 ttg_update()
 {
-	if (self.gobblegum_cooldown <= 0 && self.gobblegum_identifier != "none")
+	if (self.gobblegum.cooldown <= 0 && self.gobblegum.name != "")
 	{
 		if (self adsbuttonpressed() && self usebuttonpressed())
 		{
-			self iprintlnbold("Activated gobblegum: " + self.gobblegum_name);
-			switch(self.gobblegum_identifier) {
-				case "in_plain_sight":
-					self thread hud_activation("Zombies ignore the player for 10 seconds.", 7, true);
-					self thread gg_in_plain_sight();
-					break;
-				case "resupply":
-					self thread hud_activation("Activates a max ammo.", 7, true);
-					self thread gg_resupply();
-					break;
-				case "multiplier":
-					self thread hud_activation("Activates a double points.", 7, true);
-					self thread gg_multiplier();
-					break;
-				case "perkdrop":
-					self thread hud_activation("Activates a random perk", 7, true);
-					self thread gg_perkdrop();
-					break;
-				case "weapon_upgrade":
-					self thread hud_activation("Pack-a-Punches the current weapon", 7, true);
-					self thread gg_weapon_upgrade();
-					break;
-				default:
-			}
-			self.gobblegum_identifier = "none";
+			self iprintlnbold("Activated gobblegum: " + self.gobblegum.name);
+			self thread self.gobblegum.activate();
+			self.gobblegum.name = "";
+			self.gg_hud_name update_text("");
+			self.gg_hud_desc update_text("");
 		}
 	}
 	else
 	{
-		self.gobblegum_cooldown += -0.05;
+		self.gobblegum.cooldown = self.gobblegum.cooldown - 0.05;
 	}
 }
 
@@ -127,7 +85,7 @@ setup_gobblegum_machine(x, y, z)
 {
 	level endon("end_game");
 	print("Creating trigger. x: " + x + " y: " + y + " z: " + z);
-	trigger_gobblegum = spawn("trigger_radius", (x, y, z+30), 0, 50, 50);
+	trigger_gobblegum = spawn("trigger_radius", (x, y, z + 30), 0, 50, 50);
 	trigger_gobblegum setCursorHint("HINT_NOICON");
 	trigger_gobblegum setHintString("^3[{+activate}]^7 to get a gobblegum.");
 	entities = getEntArray("script_model", "");
@@ -138,7 +96,7 @@ setup_gobblegum_machine(x, y, z)
 		{
 			if (player.last_gobblegum_round != level.round_number)
 			{
-				player thread get_gobblegum();
+				player thread buy_gobblegum();
 				wait 0.5;
 			}
 			else
@@ -150,20 +108,15 @@ setup_gobblegum_machine(x, y, z)
 	}
 }
 
-get_gobblegum()
+buy_gobblegum()
 {
-	if (self.gobblegum_identifier == "none")
+	if (self.gobblegum.name == "")
 	{
-		self.gobblegum_cooldown = 0;
-		self.gobblegum_identifier = random(self.gobblegum_list);
-		self.gobblegum_name = get_gobblegum_name(self.gobblegum_identifier);
 		self.last_gobblegum_round = level.round_number;
-		if (self.gpp_ui_gg_hud.stored_text != "^6Gobblegum ^5(AIM + F): ^7" + self.gobblegum_name)
-		{
-			self.gpp_ui_gg_hud setText("^6Gobblegum ^5(AIM + F): ^7" + self.gobblegum_name);
-			self.gpp_ui_gg_hud.stored_text = "^6Gobblegum ^5(AIM + F): ^7" + self.gobblegum_name;
-		}
-		self iprintlnbold("You have received a gobblegum. (" + self.gobblegum_name + ")");
+		self.gobblegum = get_random_gobblegum();
+		self.gg_hud_name update_text("^5(AIM + F): ^7" + self.gobblegum.name);
+		self.gg_hud_desc update_text(self.gobblegum.desc);
+		self iprintlnbold("You have received a gobblegum. (" + self.gobblegum.name + ")");
 	}
 	else
 	{
@@ -171,27 +124,47 @@ get_gobblegum()
 	}
 }
 
-get_gobblegum_name(identifier)
+get_random_gobblegum()
 {
+	identifier = random(self.gobblegum_list);
+	gobblegum = get_gobblegum(identifier);
+}
+
+get_gobblegum(identifier)
+{
+	gobblegum = spawnStruct();
 	switch(identifier) {
 		case "in_plain_sight":
-			return "In plain sight";
+			gobblegum.name = "In plain sight";
+			gobblegum.desc = "Zombies ignore the player for 10s";
+			gobblegum.activate = ::gg_in_plain_sight;
 			break;
 		case "resupply":
-			return "Resupply";
+			gobblegum.name = "Resupply";
+			gobblegum.desc = "Drops a max ammo";
+			gobblegum.activate = ::gg_resupply;
 			break;
 		case "multiplier":
-			return "Multiplier";
+			gobblegum.name = "Multiplier";
+			gobblegum.desc = "Drops a double points";
+			gobblegum.activate = ::gg_multiplier;
 			break;
 		case "perkdrop":
-			return "Perk drop";
+			gobblegum.name = "Perk drop";
+			gobblegum.desc = "Drops a free perk";
+			gobblegum.activate = ::gg_perkdrop;
 			break;
 		case "weapon_upgrade":
-			return "Weapon upgrade";
+			gobblegum.name = "Weapon upgrade";
+			gobblegum.desc = "PaP your current weapon";
+			gobblegum.activate = ::gg_weapon_upgrade;
 			break;
 		default:
-			return "None";
+			gobblegum.name = "";
+			gobblegum.dec = "";
+			gobblegum.activate = false;
 	}
+	return gobblegum;
 }
 
 get_model()
@@ -233,39 +206,34 @@ gg_weapon_upgrade()
 {
 	current_weapon = self getcurrentweapon();
 	upgraded_weapon = maps\mp\zombies\_zm_weapons::get_upgrade_weapon(current_weapon, 1);
-	if (isdefined(upgraded_weapon)) {
+	if (isdefined(upgraded_weapon))
+	{
 		self takeweapon(current_weapon);
-		self giveweapon( upgraded_weapon, 0, self maps\mp\zombies\_zm_weapons::get_pack_a_punch_weapon_options( upgraded_weapon ) );
-		self givestartammo( upgraded_weapon );
-		self switchtoweapon( upgraded_weapon );
+		self giveweapon(upgraded_weapon, 0, self maps\mp\zombies\_zm_weapons::get_pack_a_punch_weapon_options(upgraded_weapon));
+		self givestartammo(upgraded_weapon);
+		self switchtoweapon(upgraded_weapon);
 	}
 	self.gobblegum_cooldown = 10;
 }
 
-hud_activation(text, duration, empty)
+update_text(text)
 {
-	current_text = self.gpp_ui_gg_hud.stored_text;
-	if (self.gpp_ui_gg_hud.stored_text != "^6" + text)
+	if (self.stored_text != text)
 	{
-		self.gpp_ui_gg_hud setText("^6" + text);
-		self.gpp_ui_gg_hud.stored_text = "^6" + text;
-	}
-	wait duration;
-	if (empty)
-	{
-		if (self.gpp_ui_gg_hud.stored_text != "^6No gobblegum")
-		{
-			self.gpp_ui_gg_hud setText("^6No gobblegum");
-			self.gpp_ui_gg_hud.stored_text = "^6No gobblegum";
-		}
-	}
-	else
-	{
-		if (self.gpp_ui_gg_hud.stored_text != current_text)
-		{
-			self.gpp_ui_gg_hud setText(current_text);
-			self.gpp_ui_gg_hud.stored_text = current_text;
-		}
+		self setText(text);
+		self.stored_text = test;
 	}
 }
 
+create_text(font_size, xoffset, yoffset, text)
+{
+	hud_elem = createFontString("objective", font_size);
+	hud_elem setPoint("CENTER", "CENTER", xoffset, yoffset);
+	hud_elem.alpha = 1;
+	hud_elem.hidewheninmenu = true;
+	hud_elem.hidewhendead = true;
+	hud_elem.color = (1, 1, 1);
+	hud_elem setText();
+	hud_elem.stored_text = text;
+	return hud_elem;
+}
