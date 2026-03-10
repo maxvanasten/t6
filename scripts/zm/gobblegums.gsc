@@ -235,10 +235,16 @@ gg_weapon_upgrade()
 
 update_text(text)
 {
-	if (self.stored_text != text)
+	if (isdefined(text))
 	{
-		self setText(text);
-		self.stored_text = text;
+		if (self.stored_text != text)
+		{
+			self setText(text);
+			self.stored_text = text;
+		}
+	} else {
+		self setText("");
+		self.stored_text = "";
 	}
 }
 
