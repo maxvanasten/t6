@@ -60,13 +60,11 @@ ttg_init()
 	self.gobblegum_list = array("in_plain_sight", "resupply", "multiplier", "perkdrop", "weapon_upgrade");
 	self.gg_hud_name = create_text(1.2, -225, -160, "");
 	self.gg_hud_desc = create_text(1, -225, -145, "");
+	self.gobblegum = get_gobblegum("");
 }
 
 ttg_update()
 {
-	if (!isdefined(self.gobblegum.name)) {
-		return;
-	}
 	if (self.gobblegum.cooldown <= 0 && self.gobblegum.name != "")
 	{
 		if (self adsbuttonpressed() && self usebuttonpressed())
@@ -159,6 +157,7 @@ get_gobblegum(identifier)
 {
 	gobblegum = spawnStruct();
 	gobblegum.identifier = identifier;
+	gobblegum.cooldown = 0;
 	switch(identifier) {
 		case "in_plain_sight":
 			gobblegum.name = "In plain sight";
