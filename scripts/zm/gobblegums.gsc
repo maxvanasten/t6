@@ -64,6 +64,9 @@ ttg_init()
 
 ttg_update()
 {
+	if (!isdefined(self.gobblegum.name)) {
+		return;
+	}
 	if (self.gobblegum.cooldown <= 0 && self.gobblegum.name != "")
 	{
 		if (self adsbuttonpressed() && self usebuttonpressed())
