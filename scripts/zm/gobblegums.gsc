@@ -69,7 +69,7 @@ ttg_update()
 		if (self adsbuttonpressed() && self usebuttonpressed())
 		{
 			self iprintlnbold("Activated gobblegum: " + self.gobblegum.name);
-			self thread self.gobblegum.activate();
+			self thread activate_gobblegum();
 			self.gobblegum.name = "";
 			self.gg_hud_name update_text("");
 			self.gg_hud_desc update_text("");
@@ -108,6 +108,28 @@ setup_gobblegum_machine(x, y, z)
 	}
 }
 
+activate_gobblegum()
+{
+	switch(self.gobblegum.identifier) {
+		case "in_plain_sight":
+			self thread gg_in_plain_sight();
+			break;
+		case "resupply":
+			self thread gg_resupply();
+			break;
+		case "multiplier":
+			self thread gg_multiplier();
+			break;
+		case "perkdrop":
+			self thread gg_perkdrop();
+			break;
+		case "weapon_upgrade":
+			self thread gg_weapon_upgrade();
+			break;
+		default:
+	}
+}
+
 buy_gobblegum()
 {
 	if (self.gobblegum.name == "")
@@ -133,36 +155,31 @@ get_random_gobblegum()
 get_gobblegum(identifier)
 {
 	gobblegum = spawnStruct();
+	gobblegum.identifier = identifier;
 	switch(identifier) {
 		case "in_plain_sight":
 			gobblegum.name = "In plain sight";
 			gobblegum.desc = "Zombies ignore the player for 10s";
-			gobblegum.activate = ::gg_in_plain_sight;
 			break;
 		case "resupply":
 			gobblegum.name = "Resupply";
 			gobblegum.desc = "Drops a max ammo";
-			gobblegum.activate = ::gg_resupply;
 			break;
 		case "multiplier":
 			gobblegum.name = "Multiplier";
 			gobblegum.desc = "Drops a double points";
-			gobblegum.activate = ::gg_multiplier;
 			break;
 		case "perkdrop":
 			gobblegum.name = "Perk drop";
 			gobblegum.desc = "Drops a free perk";
-			gobblegum.activate = ::gg_perkdrop;
 			break;
 		case "weapon_upgrade":
 			gobblegum.name = "Weapon upgrade";
 			gobblegum.desc = "PaP your current weapon";
-			gobblegum.activate = ::gg_weapon_upgrade;
 			break;
 		default:
 			gobblegum.name = "";
 			gobblegum.dec = "";
-			gobblegum.activate = false;
 	}
 	return gobblegum;
 }
