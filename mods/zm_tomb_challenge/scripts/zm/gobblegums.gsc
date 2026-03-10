@@ -48,15 +48,18 @@ ttg_init()
 			break;
 		default:
 	}
+
 	level thread setup_gobblegum_machine(gobblegum_pos[0], gobblegum_pos[1], gobblegum_pos[2]);
 	self.gobblegum_cooldown = 0;
 	self.last_gobblegum_round = -1;
 	self.powerup_list = array("nuke", "insta_kill", "full_ammo", "double_points", "carpenter", "fire_sale", "free_perk");
-	self.gobblegum_list = array("in_plain_sight", "resupply", "multiplier", "perkdrop", "weapon_upgrade");
+	self.gobblegum_list = array("in_plain_sight", "resupply", "multiplier", "perkdrop", "weapon_upgrade", "perkaholic", "killjoy");
+	self.perk_list = array("specialty_quickrevive", "specialty_deadshot", "specialty_fastreload", "specialty_armorvest", "specialty_longersprint", "specialty_rof", "specialty_grenadepulldeath");
 	self.gg_hud_name = create_text(1.2, 0, 150, "");
 	self.gg_hud_desc = create_text(1, 0, 160, "no gobblegum");
 	self.gobblegum = spawnstruct();
-	self.gobblegum get_gobblegum("");
+	self.gobblegum get_gobblegum("killjoy");
+	self update_hud();
 }
 
 ttg_update()
@@ -68,10 +71,10 @@ ttg_update()
 			self iprintlnbold("Activated gobblegum: " + self.gobblegum.name);
 			self thread activate_gobblegum();
 			self.gobblegum.name = "";
-			self.gg_hud_name update_text("");
-			self.gg_hud_desc update_text("no gobblegum");
+			self update_hud();
 		}
 	}
+
 	else
 	{
 		self.gobblegum.cooldown = self.gobblegum.cooldown - 0.05;
@@ -93,8 +96,10 @@ setup_gobblegum_machine(x, y, z)
 			if (player.last_gobblegum_round != level.round_number)
 			{
 				player thread buy_gobblegum();
+				player thread update_hud();
 				wait 0.5;
 			}
+		
 			else
 			{
 				player iprintlnbold("You have already received a gobblegum this round.");
@@ -122,6 +127,12 @@ activate_gobblegum()
 		case "weapon_upgrade":
 			self thread gg_weapon_upgrade();
 			break;
+		case "perkaholic":
+			self thread gg_perkaholic();
+			break;
+		case "killjoy":
+			self thread gg_killjoy();
+			break;
 		default:
 	}
 }
@@ -133,10 +144,10 @@ buy_gobblegum()
 		self.last_gobblegum_round = level.round_number;
 		identifier = random(self.gobblegum_list);
 		self.gobblegum get_gobblegum(identifier);
-		self.gg_hud_name update_text("^5(AIM + F): ^7" + self.gobblegum.name);
-		self.gg_hud_desc update_text(self.gobblegum.desc);
+		self update_hud();
 		self iprintlnbold("You have received a gobblegum. (" + self.gobblegum.name + ")");
 	}
+
 	else
 	{
 		self iprintlnbold("You already have a gobblegum!");
@@ -167,6 +178,14 @@ get_gobblegum(identifier)
 		case "weapon_upgrade":
 			self.name = "Weapon upgrade";
 			self.desc = "PaP your current weapon";
+			break;
+		case "perkaholic":
+			self.name = "Perkaholic";
+			self.desc = "Receive all perks";
+			break;
+		case "killjoy":
+			self.name = "Kill Joy";
+			self.desc = "Spawn an insta-kill";
 			break;
 		default:
 			self.name = "";
@@ -200,6 +219,22 @@ gg_perkdrop()
 	self.gobblegum_cooldown = 10;
 }
 
+gg_killjoy()
+{
+	self maps\mp\zombies\_zm_powerups::specific_powerup_drop("insta_kill", self.origin);
+	self.gobblegum_cooldown = 10;
+}
+
+gg_perkaholic()
+{
+	foreach (perk in self.perk_list)
+	{
+		self maps\mp\zombies\_zm_perks::give_perk(perk);
+	}
+
+	self.gobblegum_cooldown = 10;
+}
+
 gg_weapon_upgrade()
 {
 	current_weapon = self getcurrentweapon();
@@ -211,6 +246,7 @@ gg_weapon_upgrade()
 		self givestartammo(upgraded_weapon);
 		self switchtoweapon(upgraded_weapon);
 	}
+
 	self.gobblegum_cooldown = 10;
 }
 
@@ -220,6 +256,21 @@ update_text(text)
 	{
 		self setText(text);
 		self.stored_text = text;
+	}
+}
+
+update_hud()
+{
+	if (self.gobblegum.name != "")
+	{
+		self.gg_hud_name update_text("^6(aim + f): " + self.gobblegum.name);
+		self.gg_hud_desc update_text(self.gobblegum.desc);
+	}
+
+	else
+	{
+		self.gg_hud_name update_text("");
+		self.gg_hud_desc update_text("");
 	}
 }
 

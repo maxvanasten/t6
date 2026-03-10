@@ -2,31 +2,31 @@
 #include maps\mp\gametypes_zm\_hud_util;
 init()
 {
-    level thread onPlayerConnect();
+	level thread onPlayerConnect();
 }
 
 onPlayerConnect()
 {
-    for ( ;; )
-    {
-        level waittill("connecting", player);
-        player thread onPlayerSpawned();
-    }
+	for ( ;; )
+	{
+		level waittill("connecting", player);
+		player thread onPlayerSpawned();
+	}
 }
 
 onPlayerSpawned()
 {
-    self endon("disconnect");
+	self endon("disconnect");
 
-    flag_wait("initial_blackscreen_passed");
+	flag_wait("initial_blackscreen_passed");
 
-    self thread ttg_init();
+	self thread ttg_init();
 
-    for ( ;; )
-    {
-        self thread ttg_update();
-        wait 0.05;
-    }
+	for ( ;; )
+	{
+		self thread ttg_update();
+		wait 0.05;
+	}
 }
 
 ttg_init()
@@ -112,29 +112,33 @@ ttg_init()
 
 ttg_update()
 {
-	self givemaxammo( self getcurrentweapon() );
+	self givemaxammo(self getcurrentweapon());
 	self thread check_kills();
-	if (self.weapon_kills >= (10 + (self.gun_index * 2)) && !self.finished)
+	if (self.weapon_kills >= 10 + self.gun_index * 2 && !self.finished)
 	{
 		if (self.gun_index >= self.gungame_weapons.size - 1)
 		{
 			self thread player_wins();
 		}
+	
 		else
 		{
 			self thread next_weapon();
 		}
 	}
+
 	if (self.score > 0)
 	{
 		self.score = 0;
 	}
+
 	self thread update_hud_total_kills();
 	if (self.finished == 1)
 	{
 		self.gpp_ui_osc_hud_weapon_kills.alpha = 0;
 		self.gpp_ui_osc_hud_weapon.alpha = 0;
 	}
+
 	else
 	{
 		self thread update_hud_weapon_kills();
@@ -146,14 +150,15 @@ next_weapon()
 {
 	self.weapon_kills = 0;
 	weaponslist = self getweaponslist();
-	for (i = 0; i < weaponslist.size; i++)
+	for (i = 0; i < weaponslist.size; i = i + 1)
 	{
 		if (weaponslist[i] != "knife_zm")
 		{
 			self takeweapon(weaponslist[i]);
 		}
 	}
-	self.gun_index += 1;
+
+	self.gun_index = self.gun_index + 1;
 	self giveWeapon(self.gungame_weapons[self.gun_index]);
 }
 
@@ -168,13 +173,14 @@ give_completed_loadout()
 {
 	self maps\mp\zombies\_zm_perks::give_perk("specialty_additionalprimaryweapon");
 	weaponslist = self getweaponslist();
-	for (i = 0; i < weaponslist.size; i++)
+	for (i = 0; i < weaponslist.size; i = i + 1)
 	{
 		if (weaponslist[i] != "knife_zm")
 		{
 			self takeweapon(weaponslist[i]);
 		}
 	}
+
 	self giveWeapon("galil_upgraded_zm");
 	self giveWeapon("python_upgraded_zm");
 	self giveWeapon("staff_air_zm");
@@ -189,6 +195,7 @@ player_revived_monitor()
 		{
 			self give_completed_loadout();
 		}
+	
 		wait 0.5;
 	}
 }
@@ -199,7 +206,7 @@ check_kills()
 	if (self.kills_diff > 0)
 	{
 		self.temp_kills = self.kills;
-		self.weapon_kills += self.kills_diff;
+		self.weapon_kills = self.weapon_kills + self.kills_diff;
 		self.kills_diff = 0;
 	}
 }
@@ -211,16 +218,18 @@ update_hud_total_kills()
 		self.gpp_ui_osc_hud_total_kills setValue(self.kills);
 		self.gpp_ui_osc_hud_total_kills.stored_value = self.kills;
 	}
+
 	wait 0.5;
 }
 
 update_hud_weapon_kills()
 {
-	if (self.gpp_ui_osc_hud_weapon_kills.stored_value != (10 + (self.gun_index*2)) - self.weapon_kills)
+	if (self.gpp_ui_osc_hud_weapon_kills.stored_value != 10 + self.gun_index * 2 - self.weapon_kills)
 	{
-		self.gpp_ui_osc_hud_weapon_kills setValue((10 + (self.gun_index*2)) - self.weapon_kills);
-		self.gpp_ui_osc_hud_weapon_kills.stored_value = (10 + (self.gun_index*2)) - self.weapon_kills;
+		self.gpp_ui_osc_hud_weapon_kills setValue(10 + self.gun_index * 2 - self.weapon_kills);
+		self.gpp_ui_osc_hud_weapon_kills.stored_value = 10 + self.gun_index * 2 - self.weapon_kills;
 	}
+
 	wait 0.5;
 }
 
@@ -231,6 +240,7 @@ update_hud_weapon()
 		self.gpp_ui_osc_hud_weapon setValue(27 - self.gun_index);
 		self.gpp_ui_osc_hud_weapon.stored_value = 27 - self.gun_index;
 	}
+
 	wait 0.5;
 }
 
@@ -263,13 +273,14 @@ handle_round_change()
 
 player_handler()
 {
-	self.b_challenge_exists = maps\mp\zombies\_zm_challenges::challenge_exists ("zc_zone_captures");
+	self.b_challenge_exists = maps\mp\zombies\_zm_challenges::challenge_exists("zc_zone_captures");
 	self notify("completed_zone_capture");
 	self maps\mp\zombies\_zm_score::player_add_points("bonus_points_powerup", 100);
 	if (self.b_challenge_exists)
 	{
 		self maps\mp\zombies\_zm_challenges::increment_stat("zc_zone_captures");
 	}
+
 	self maps\mp\zombies\_zm_stats::increment_client_stat("tomb_generator_captured", 0);
 	self maps\mp\zombies\_zm_stats::increment_player_stat("tomb_generator_captured");
 	self.all_perks = true;
@@ -277,19 +288,25 @@ player_handler()
 	{
 		check_perk(perk_name);
 	}
+
 	if (self.all_perks)
 	{
-		self.upgraded_weapon_name = maps\mp\zombies\_zm_weapons::get_upgrade_weapon(self getcurrentweapon(), 1);
-		weaponslist = self getweaponslist();
-		for (i = 0; i < weaponslist.size; i++)
+		if (self.gun_index <= 21)
 		{
-			if (weaponslist[i] != "knife_zm")
+			self.upgraded_weapon_name = maps\mp\zombies\_zm_weapons::get_upgrade_weapon(self getcurrentweapon(), 1);
+			weaponslist = self getweaponslist();
+			for (i = 0; i < weaponslist.size; i = i + 1)
 			{
-				self takeweapon(weaponslist[i]);
+				if (weaponslist[i] != "knife_zm")
+				{
+					self takeweapon(weaponslist[i]);
+				}
 			}
+		
+			self giveWeapon(self.upgraded_weapon_name);
 		}
-		self giveWeapon(self.upgraded_weapon_name);
 	}
+
 	else
 	{
 		self give_random_perk();
@@ -311,6 +328,7 @@ give_random_perk()
 	{
 		self give_random_perk();
 	}
+
 	else
 	{
 		self maps\mp\zombies\_zm_perks::give_perk(self.random_perk);
@@ -323,9 +341,9 @@ get_progress_rate(n_players_in_zone)
 	{
 		return 0.2;
 	}
+
 	else
 	{
 		return -0.5;
 	}
 }
-
