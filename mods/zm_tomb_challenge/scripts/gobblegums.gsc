@@ -261,7 +261,7 @@ gg_weapon_upgrade()
 gg_perkaholic()
 {
 	for (i = 0; i < self.perk_list.size; i++) {
-		self maps\mp\zombies\_zm_perks::give_perk(self.perk_list[i])
+		self maps\mp\zombies\_zm_perks::give_perk(self.perk_list[i]);
 	}
 	self.gobblegum_cooldown = 10;
 }
