@@ -8,9 +8,8 @@ I'm always interested in fun mod ideas so that I can improve my modding skills, 
 
 ## Downloading mods/scripts
 
-You can download a mod or script by either clicking on the mod.zip or script.gsc file and clicking the "download raw file" button on github.
-
-![example](example.png)
+You can download mods/scripts individually by clicking on `download raw file` when clicking on the file you want to download.
+Raw scripts can be found in `./scripts`. Mods can be found in .zip format in `./mods`.
 
 ## Installing mods
 
