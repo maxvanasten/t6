@@ -1,5 +1,8 @@
+#include scripts\zm\maxlib;
 #include common_scripts\utility;
 #include maps\mp\gametypes_zm\_hud_util;
+#include maps\mp\zombies\_zm_utility;
+
 init()
 {
 	level thread onPlayerConnect();
@@ -17,7 +20,7 @@ onPlayerConnect()
 onPlayerSpawned()
 {
 	self endon("disconnect");
-	flag_wait("initial_blackscreen_passed");
+	common_scripts\utility::flag_wait("initial_blackscreen_passed");
 	self thread ttg_init();
 	for ( ;; )
 	{
@@ -52,11 +55,11 @@ ttg_init()
 	level thread setup_gobblegum_machine(gobblegum_pos[0], gobblegum_pos[1], gobblegum_pos[2]);
 	self.gobblegum_cooldown = 0;
 	self.last_gobblegum_round = -1;
-	self.powerup_list = array("nuke", "insta_kill", "full_ammo", "double_points", "carpenter", "fire_sale", "free_perk");
+	self.powerup_list = ml_powerups();
+	self.perk_list = ml_perks();
 	self.gobblegum_list = array("in_plain_sight", "resupply", "multiplier", "perkdrop", "weapon_upgrade", "perkaholic", "killjoy");
-	self.perk_list = array("specialty_quickrevive", "specialty_deadshot", "specialty_fastreload", "specialty_armorvest", "specialty_longersprint", "specialty_rof", "specialty_grenadepulldeath");
-	self.gg_hud_name = create_text(1.2, 0, 150, "");
-	self.gg_hud_desc = create_text(1, 0, 160, "no gobblegum");
+	self.gg_hud_name = ml_create_text(1.2, 0, 150, "");
+	self.gg_hud_desc = ml_create_text(1, 0, 160, "no gobblegum");
 	self.gobblegum = spawnstruct();
 	self.gobblegum get_gobblegum("killjoy");
 	self update_hud();
@@ -250,39 +253,17 @@ gg_weapon_upgrade()
 	self.gobblegum_cooldown = 10;
 }
 
-update_text(text)
-{
-	if (self.stored_text != text)
-	{
-		self setText(text);
-		self.stored_text = text;
-	}
-}
-
 update_hud()
 {
 	if (self.gobblegum.name != "")
 	{
-		self.gg_hud_name update_text("^6(aim + f): " + self.gobblegum.name);
-		self.gg_hud_desc update_text(self.gobblegum.desc);
+		self.gg_hud_name ml_update_text("^6(aim + f): " + self.gobblegum.name);
+		self.gg_hud_desc ml_update_text(self.gobblegum.desc);
 	}
 
 	else
 	{
-		self.gg_hud_name update_text("");
-		self.gg_hud_desc update_text("");
+		self.gg_hud_name ml_update_text("");
+		self.gg_hud_desc ml_update_text("");
 	}
-}
-
-create_text(font_size, xoffset, yoffset, text)
-{
-	hud_elem = createFontString("objective", font_size);
-	hud_elem setPoint("CENTER", "CENTER", xoffset, yoffset);
-	hud_elem.alpha = 1;
-	hud_elem.hidewheninmenu = true;
-	hud_elem.hidewhendead = true;
-	hud_elem.color = (1, 1, 1);
-	hud_elem setText(text);
-	hud_elem.stored_text = text;
-	return hud_elem;
 }
