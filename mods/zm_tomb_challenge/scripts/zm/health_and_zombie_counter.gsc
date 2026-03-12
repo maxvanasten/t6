@@ -1,33 +1,35 @@
+#include scripts\zm\maxlib;
 #include common_scripts\utility;
 #include maps\mp\gametypes_zm\_hud_util;
 #include maps\mp\zombies\_zm_utility;
+
 init()
 {
-    level thread onPlayerConnect();
+	level thread onPlayerConnect();
 }
 
 onPlayerConnect()
 {
-    for ( ;; )
-    {
-        level waittill("connecting", player);
-        player thread onPlayerSpawned();
-    }
+	for ( ;; )
+	{
+		level waittill("connecting", player);
+		player thread onPlayerSpawned();
+	}
 }
 
 onPlayerSpawned()
 {
-    self endon("disconnect");
+	self endon("disconnect");
 
-    flag_wait("initial_blackscreen_passed");
+	flag_wait("initial_blackscreen_passed");
 
-    self thread ttg_init();
+	self thread ttg_init();
 
-    for ( ;; )
-    {
-        self thread ttg_update();
-        wait 0.05;
-    }
+	for ( ;; )
+	{
+		self thread ttg_update();
+		wait 0.05;
+	}
 }
 
 ttg_init()
@@ -67,6 +69,7 @@ update_hud_health_counter()
 		self.gpp_ui_health_counter setValue(self.health);
 		self.gpp_ui_health_counter.stored_value = self.health;
 	}
+
 	wait 0.5;
 }
 
@@ -77,6 +80,6 @@ update_hud_zombie_counter()
 		self.gpp_ui_zombie_counter setValue(self.zombies_left);
 		self.gpp_ui_zombie_counter.stored_value = self.zombies_left;
 	}
+
 	wait 0.5;
 }
-

@@ -1,6 +1,8 @@
+#include scripts\zm\maxlib;
 #include common_scripts\utility;
 #include maps\mp\gametypes_zm\_hud_util;
-#include zm\maxlib;
+#include maps\mp\zombies\_zm_utility;
+
 init()
 {
 	level thread onPlayerConnect();
@@ -19,7 +21,7 @@ onPlayerSpawned()
 {
 	self endon("disconnect");
 
-	flag_wait("initial_blackscreen_passed");
+	common_scripts\utility::flag_wait("initial_blackscreen_passed");
 
 	self thread ttg_init();
 
@@ -70,31 +72,31 @@ ttg_init()
 	self thread player_revived_monitor();
 	self next_weapon();
 	self iprintlnbold("^5Get ^1kills ^5to upgrade your weapon!");
-	self.gpp_ui_osc_hud_total_kills = createFontString("objective", 1.5);
-	self.gpp_ui_osc_hud_total_kills setPoint("CENTER", "CENTER", -225, -205);
+	self.gpp_ui_osc_hud_total_kills = maps\mp\gametypes_zm\_hud_util::createFontString("objective", 1.5);
+	self.gpp_ui_osc_hud_total_kills maps\mp\gametypes_zm\_hud_util::setPoint("CENTER", "CENTER", -225, -205);
 	self.gpp_ui_osc_hud_total_kills.alpha = 1;
 	self.gpp_ui_osc_hud_total_kills.hidewheninmenu = true;
 	self.gpp_ui_osc_hud_total_kills.hidewhendead = true;
 	self.gpp_ui_osc_hud_total_kills.color = (1, 1, 1);
-	self.gpp_ui_osc_hud_total_kills setValue(0);
+	self.gpp_ui_osc_hud_total_kills maps\mp\gametypes_zm\_hud_util::setValue(0);
 	self.gpp_ui_osc_hud_total_kills.label = &"Total kills: ^5";
 	self.gpp_ui_osc_hud_total_kills.stored_value = 0;
-	self.gpp_ui_osc_hud_weapon_kills = createFontString("objective", 1.5);
-	self.gpp_ui_osc_hud_weapon_kills setPoint("CENTER", "CENTER", -225, -190);
+	self.gpp_ui_osc_hud_weapon_kills = maps\mp\gametypes_zm\_hud_util::createFontString("objective", 1.5);
+	self.gpp_ui_osc_hud_weapon_kills maps\mp\gametypes_zm\_hud_util::setPoint("CENTER", "CENTER", -225, -190);
 	self.gpp_ui_osc_hud_weapon_kills.alpha = 1;
 	self.gpp_ui_osc_hud_weapon_kills.hidewheninmenu = true;
 	self.gpp_ui_osc_hud_weapon_kills.hidewhendead = true;
 	self.gpp_ui_osc_hud_weapon_kills.color = (1, 1, 1);
-	self.gpp_ui_osc_hud_weapon_kills setValue(0);
+	self.gpp_ui_osc_hud_weapon_kills maps\mp\gametypes_zm\_hud_util::setValue(0);
 	self.gpp_ui_osc_hud_weapon_kills.label = &"Weapon kills left: ^4";
 	self.gpp_ui_osc_hud_weapon_kills.stored_value = 0;
-	self.gpp_ui_osc_hud_weapon = createFontString("objective", 1.5);
-	self.gpp_ui_osc_hud_weapon setPoint("CENTER", "CENTER", -225, -175);
+	self.gpp_ui_osc_hud_weapon = maps\mp\gametypes_zm\_hud_util::createFontString("objective", 1.5);
+	self.gpp_ui_osc_hud_weapon maps\mp\gametypes_zm\_hud_util::setPoint("CENTER", "CENTER", -225, -175);
 	self.gpp_ui_osc_hud_weapon.alpha = 1;
 	self.gpp_ui_osc_hud_weapon.hidewheninmenu = true;
 	self.gpp_ui_osc_hud_weapon.hidewhendead = true;
 	self.gpp_ui_osc_hud_weapon.color = (1, 1, 1);
-	self.gpp_ui_osc_hud_weapon setValue(0);
+	self.gpp_ui_osc_hud_weapon maps\mp\gametypes_zm\_hud_util::setValue(0);
 	self.gpp_ui_osc_hud_weapon.label = &"^7Weapons left: ^3";
 	self.gpp_ui_osc_hud_weapon.stored_value = 0;
 	self.perk_list = [];
@@ -302,7 +304,7 @@ check_perk(perk_name)
 
 give_random_perk()
 {
-	self.random_perk = random(self.perk_list);
+	self.random_perk = common_scripts\utility::random(self.perk_list);
 	if (self hasPerk(self.random_perk))
 	{
 		self give_random_perk();
@@ -324,51 +326,5 @@ get_progress_rate(n_players_in_zone)
 	else
 	{
 		return -0.5;
-	}
-}
-// [player]ml_can_upgrade_weapon:bool
-ml_can_upgrade_weapon()
-{
-	weapon_name = self getcurrentweapon();
-	switch(weapon_name) {
-		case "staff_lightning_zm":
-			return false;
-		case "staff_fire_zm":
-			return false;
-		case "staff_air_zm":
-			return false;
-		case "ray_gun_zm":
-			return false;
-		case "raygun_mark2_zm":
-			return false;
-		default:
-			return true;
-	}
-}
-
-// [player]ml_upgrade_weapon
-ml_upgrade_weapon()
-{
-	if (!self ml_can_upgrade_weapon())
-	{
-		return;
-	}
-
-	upgraded_weapon_name = maps\mp\zombies\_zm_weapons::get_upgrade_weapon(weapon_name, 1);
-
-	self takeweapon(weapon_name);
-	self giveweapon(self.upgraded_weapon_name);
-}
-
-// [player]ml_take_all_weapons
-ml_take_all_weapons()
-{
-	weaponslist = self getweaponslist();
-	for (i = 0; i < weaponslist.size; i = i + 1)
-	{
-		if (weaponslist[i] != "knife_zm")
-		{
-			self takeweapon(weaponslist[i]);
-		}
 	}
 }
