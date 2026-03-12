@@ -2,40 +2,32 @@
 rm -rf ./mods/*
 
 create_mod() {
-	echo "[build_mods] Building mod $1 ($2)"
-	mkdir ./mods/$1
-	mkdir ./mods/$1/scripts
-	touch ./mods/$1/mod.json
+	mod_name=$1
+	mod_desc=$2
 
-	echo "{\"name\":\"$1\",\"author\":\"HasjBlok\",\"description\":\"$3\",\"version\":\"1.0\"}" > ./mods/$1/mod.json
+	echo "[build_mods] Building mod $mod_name"
+	mkdir ./mods/$mod_name
+	mkdir ./mods/$mod_name/scripts
+	touch ./mods/$mod_name/mod.json
+
+	echo "{\"name\":\"$mod_name\",\"author\":\"HasjBlok\",\"description\":\"$mod_desc\",\"version\":\"1.0\"}" > ./mods/$mod_name/mod.json
 }
 
 add_script() {
-	echo "[build_mods] Adding script $2/$3 to mod $1"
-	mkdir -p ./mods/$1/scripts/$2
-	cp ./scripts/$2/$3 ./mods/$1/scripts/$2/$3
+	mod_name=$1
+	script_path=$2
+	output_path="${3:-$2}"
+
+	mkdir -p "./mods/$mod_name/scripts/$(dirname $output_path)"
+	cat ./scripts/$script_path > ./mods/$mod_name/scripts/$output_path
 }
 
-zip_mod() {
-	echo "[build_mods] Zipping mod"
-	rm -rf ./mods/$1/$1.zip
-	zip -r $1.zip ./mods/$1
-	mv $1.zip ./mods/$1
-}
+create_mod zm_tomb_challenge "Origins spawnroom gungame challenge."
+add_script zm_tomb_challenge zm/maxlib.gsc zm/zm_tomb/maxlib.gsc
+add_script zm_tomb_challenge zm/gobblegums.gsc zm/zm_tomb/gobblegums.gsc
+add_script zm_tomb_challenge zm/zm_tomb/challenge.gsc zm/zm_tomb/challenge.gsc
+add_script zm_tomb_challenge zm/health_and_zombie_counter.gsc
 
-add_bundled_script() {
-	echo "[build_mods] Bundling and adding script $2 to $1"
-	input_file=./scripts/$2/$3
-	lib_file=./scripts/$4
-	mkdir -p ./mods/$1/scripts/$2
-	output_file=./mods/$1/scripts/$2/$3
-	touch $output_file
-	cat $input_file > $output_file
-	cat $lib_file >> $output_file
-}
-
-create_mod zm_tomb_challenge zm "Origins spawnroom gungame challenge."
-add_script zm_tomb_challenge zm gobblegums.gsc
-add_script zm_tomb_challenge zm health_and_zombie_counter.gsc
-add_bundled_script zm_tomb_challenge zm/zm_tomb origins_spawnroom_challenge.gsc zm/maxlib.gsc
-zip_mod zm_tomb_challenge
+create_mod zm_randomizer "Randomized start for zombies."
+add_script zm_randomizer zm/maxlib.gsc
+add_script zm_randomizer zm/random_loadout.gsc
