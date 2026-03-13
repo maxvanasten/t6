@@ -2,6 +2,11 @@
 
 This is a centralized collection of my t6 mods/scripts.
 
+| Mod | Description | Download |
+| --- | --- | --- |
+| zm_randomizer | Randomized start for zombies. | [Download zip](https://github.com/maxvanasten/t6/raw/refs/heads/master/dist/zm_randomizer.zip) |
+| zm_tomb_challenge | Origins spawnroom gungame challenge. | [Download zip](https://github.com/maxvanasten/t6/raw/refs/heads/master/dist/zm_tomb_challenge.zip) |
+
 ## Requests
 
 I'm always interested in fun mod ideas so that I can improve my modding skills, so if you have suggestions, please create an Issue on this repo or contact me some other way (good luck).
@@ -11,15 +16,6 @@ I'm always interested in fun mod ideas so that I can improve my modding skills, 
 Raw scripts can be found in `./scripts`.
 
 Mods are available as zip files in `./dist`:
-
-| Mod | Description | Download |
-| --- | --- | --- |
-| zm_randomizer | Randomized start for zombies. | [Download zip](https://github.com/maxvanasten/t6/raw/refs/heads/master/dist/zm_randomizer.zip) |
-| zm_tomb_challenge | Origins spawnroom gungame challenge. | [Download zip](https://github.com/maxvanasten/t6/raw/refs/heads/master/dist/zm_tomb_challenge.zip) |
-
-To refresh `./dist` after mod changes, run:
-
-`./package_mods.sh`
 
 ## Installing mods
 
