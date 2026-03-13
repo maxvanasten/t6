@@ -14,8 +14,8 @@ Mods are available as zip files in `./dist`:
 
 | Mod | Description | Download |
 | --- | --- | --- |
-| zm_randomizer | Randomized start for zombies. | [Download zip](./dist/zm_randomizer.zip) |
-| zm_tomb_challenge | Origins spawnroom gungame challenge. | [Download zip](./dist/zm_tomb_challenge.zip) |
+| zm_randomizer | Randomized start for zombies. | [Download zip](https://github.com/maxvanasten/t6/raw/refs/heads/master/dist/zm_randomizer.zip) |
+| zm_tomb_challenge | Origins spawnroom gungame challenge. | [Download zip](https://github.com/maxvanasten/t6/raw/refs/heads/master/dist/zm_tomb_challenge.zip) |
 
 To refresh `./dist` after mod changes, run:
 
