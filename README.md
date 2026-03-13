@@ -8,8 +8,18 @@ I'm always interested in fun mod ideas so that I can improve my modding skills, 
 
 ## Downloading mods/scripts
 
-You can download mods/scripts individually by clicking on `download raw file` when clicking on the file you want to download.
-Raw scripts can be found in `./scripts`. Mods can be found in .zip format in `./mods/<specific mod>`.
+Raw scripts can be found in `./scripts`.
+
+Mods are available as zip files in `./dist`:
+
+| Mod | Description | Download |
+| --- | --- | --- |
+| zm_randomizer | Randomized start for zombies. | [Download zip](./dist/zm_randomizer.zip) |
+| zm_tomb_challenge | Origins spawnroom gungame challenge. | [Download zip](./dist/zm_tomb_challenge.zip) |
+
+To refresh `./dist` after mod changes, run:
+
+`./package_mods.sh`
 
 ## Installing mods
 

@@ -27,47 +27,104 @@ onPlayerSpawned()
 	self endon("disconnect");
 
 	flag_wait("initial_blackscreen_passed");
+	if (level.script == "zm_prison") {
+		flag_wait("afterlife_start_over");
+	}
 
-	self.wone = ml_create_text(1.5, 0, -170, "");
-	self.wtwo = ml_create_text(1.5, 0, -150, "");
+	self.hud_weapon_one = ml_create_text(1.25, -200, -150, "");
+	self.hud_weapon_two = ml_create_text(1.25, -200, -135, "");
+	self.hud_perks = [];
 
+	for (i = 0; i < 4; i = i + 1)
+	{
+		offset = i * 15;
+		self.hud_perks[i] = ml_create_text(1.25, -200, -120 + offset, "");
+	}
+
+	//level.weapon_list = ml_weapons(level.script);
+	level.weapon_list = array("jetgun_zm", "m14_zm");
 	self give_random_loadout();
+	self give_random_perks();
+}
+
+give_random_perks()
+{
+	perks = ml_perks();
+	for (i = 0; i < 4; i = i + 1)
+	{
+		perk = random(perks);
+		arrayremovevalue(perks, perk);
+		self maps\mp\zombies\_zm_perks::give_perk(perk);
+		self.hud_perks[i] ml_update_text("^5perk(" + i + ") ^7" + perk);
+	}
 }
 
 give_random_loadout()
 {
 	self ml_take_all_weapons();
 
+	self.has_one_inch_punch = false;
+
 	for (i = 0; i < 2; i = i + 1)
 	{
-		weapon_name = random(ml_weapons(level.script));
-		if (issubstr(weapon_name, "_upgraded_zm") && issubstr(weapon_name, "staff_"))
-		{
-			self thread give_upgraded_staff(weapon_name);
+		weapon_name = random(level.weapon_list);
+		arrayremovevalue(level.weapon_list, weapon_name);
+		if (issubstr(weapon_name, "one_inch_punch")) {
+			array_exclude(level.weapon_list, array("one_inch_punch_air_zm", "one_inch_punch_fire_zm", "one_inch_punch_ice_zm", "one_inch_punch_lightning_zm", "one_inch_punch_zm", "one_inch_punch_upgraded_zm"));
 		}
 	
-		else
-		{
+		if (issubstr(weapon_name, "_upgraded_zm")) {
+			if (issubstr(weapon_name, "staff_")) {
+				self thread give_upgraded_staff(weapon_name);
+			} else {
+				self thread give_upgraded_weapon(weapon_name);
+			}
+		} else {
 			self giveweapon(weapon_name);
 		}
 	
+		if (issubstr(weapon_name, "tomahawk")) {
+			self.has_hell_retriever = true;
+			self.has_retriever = true;
+			self notify("tomahawk_acquired");
+		}
+	
+		if (issubstr(weapon_name, "jetgun")) {
+			self.has_jetgun = true;
+			self notify("jetgun_acquired");
+			self notify("player_got_jetgun");
+			self notify("player_has_jetgun");
+			self switchToWeapon("knife_zm");
+			wait(0.12);
+			self switchToWeaponImmediate(weapon_name);
+		}
+	
 		self givemaxammo(weapon_name);
-
+	
 		if (i == 0) {
-			self.wone ml_update_text(weapon_name);
+			self.hud_weapon_one ml_update_text("^5weapon_one: ^7" + weapon_name);
 		} else {
-			self.wtwo ml_update_text(weapon_name);
+			self.hud_weapon_two ml_update_text("^5weapon_two: ^7" + weapon_name);
 		}
 	}
 }
 
-give_upgraded_staff(weapon_name)
+give_upgraded_weapon(weapon_name)
 {
-	camo = self calcweaponoptions(40, 0, 0, 0);
+	camo = self calcweaponoptions(39, 0, 0, 0);
+	if (level.script == "zm_tomb") {
+		camo = self calcweaponoptions(40, 0, 0, 0);
+	}
+
 	self giveweapon(weapon_name, 0, camo);
 	self switchtoweapon(weapon_name);
+}
+
+give_upgraded_staff(weapon_name)
+{
+	self give_upgraded_weapon(weapon_name);
+
 	self giveweapon("staff_revive_zm");
 	self setactionslot(3, "weapon", "staff_revive_zm");
-	self givemaxammo(weapon_name);
 	self givemaxammo("staff_revive_zm");
 }
