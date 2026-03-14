@@ -27,6 +27,13 @@ ml_take_all_weapons()
 	}
 }
 
+ml_give_weapon(weapon_name)
+{
+	self giveweapon(weapon_name);
+	self givemaxammo(weapon_name);
+	self switchtoweapon(weapon_name);
+}
+
 // ml_create_text:hud_elem
 ml_create_text(font_size, xoffset, yoffset, text)
 {
