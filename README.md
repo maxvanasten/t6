@@ -6,6 +6,7 @@ This is a centralized collection of my t6 mods/scripts.
 | --- | --- | --- |
 | zm_randomizer | Randomized start for zombies. | [Download zip](https://github.com/maxvanasten/t6/raw/refs/heads/master/dist/zm_randomizer.zip) |
 | zm_tomb_challenge | Origins spawnroom gungame challenge. | [Download zip](https://github.com/maxvanasten/t6/raw/refs/heads/master/dist/zm_tomb_challenge.zip) |
+| zm_quests_demo | A demo for my new quest library. | [Download zip](https://github.com/maxvanasten/t6/raw/refs/heads/master/dist/zm_quests_demo.zip) |
 
 ## Requests
 
@@ -17,13 +18,16 @@ Raw scripts can be found in `./scripts`.
 
 ## Scripts
 
+WARNING: Scripts are not always meant to be run standalone, the mods will all work out of the box.
+
 | Script | Description | Download |
 | --- | --- | --- |
 | random_loadout | Random loadout on spawn (weapons, perks, equipment) | [Download](https://raw.githubusercontent.com/maxvanasten/t6/master/scripts/zm/random_loadout.gsc) |
 | gobblegums | Gobblegum machine functionality | [Download](https://raw.githubusercontent.com/maxvanasten/t6/master/scripts/zm/gobblegums.gsc) |
 | health_and_zombie_counter | HUD showing player health and zombie count | [Download](https://raw.githubusercontent.com/maxvanasten/t6/master/scripts/zm/health_and_zombie_counter.gsc) |
 | custom_mystery_box | Custom mystery box functionality | [Download](https://raw.githubusercontent.com/maxvanasten/t6/master/scripts/zm/custom_mystery_box.gsc) |
-| zm_quests | Easter egg quest helpers | [Download](https://raw.githubusercontent.com/maxvanasten/t6/master/scripts/zm/zm_quests.gsc) |
+| zm_quests | Quests library | [Download](https://raw.githubusercontent.com/maxvanasten/t6/master/scripts/zm/zm_quests.gsc) |
+| demo_quest | Quests library demo quest | [Download](https://raw.githubusercontent.com/maxvanasten/t6/master/scripts/zm/demo_quest.gsc) |
 | zm_tomb/challenge | Challenge mode for zm_tomb map | [Download](https://raw.githubusercontent.com/maxvanasten/t6/master/scripts/zm/zm_tomb/challenge.gsc) |
 | dev_tools | Debug HUD | [Download](https://raw.githubusercontent.com/maxvanasten/t6/master/scripts/zm/dev_tools.gsc) |
 | maxlib | General purpose library | [Download](https://raw.githubusercontent.com/maxvanasten/t6/master/scripts/zm/maxlib.gsc) |

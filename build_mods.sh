@@ -31,3 +31,8 @@ add_script zm_tomb_challenge zm/health_and_zombie_counter.gsc
 create_mod zm_randomizer "Randomized start for zombies."
 add_script zm_randomizer zm/maxlib.gsc
 add_script zm_randomizer zm/random_loadout.gsc
+
+create_mod zm_quests_demo "A quest library for gsc"
+add_script zm_quests_demo zm/maxlib.gsc
+add_script zm_quests_demo zm/zm_quests.gsc
+add_script zm_quests_demo zm/demo_quest.gsc
