@@ -15,6 +15,19 @@ I'm always interested in fun mod ideas so that I can improve my modding skills, 
 
 Raw scripts can be found in `./scripts`.
 
+## Scripts
+
+| Script | Description | Download |
+| --- | --- | --- |
+| random_loadout | Random loadout on spawn (weapons, perks, equipment) | [Download](https://raw.githubusercontent.com/maxvanasten/t6/master/scripts/zm/random_loadout.gsc) |
+| gobblegums | Gobblegum machine functionality | [Download](https://raw.githubusercontent.com/maxvanasten/t6/master/scripts/zm/gobblegums.gsc) |
+| health_and_zombie_counter | HUD showing player health and zombie count | [Download](https://raw.githubusercontent.com/maxvanasten/t6/master/scripts/zm/health_and_zombie_counter.gsc) |
+| custom_mystery_box | Custom mystery box functionality | [Download](https://raw.githubusercontent.com/maxvanasten/t6/master/scripts/zm/custom_mystery_box.gsc) |
+| zm_quests | Easter egg quest helpers | [Download](https://raw.githubusercontent.com/maxvanasten/t6/master/scripts/zm/zm_quests.gsc) |
+| zm_tomb/challenge | Challenge mode for zm_tomb map | [Download](https://raw.githubusercontent.com/maxvanasten/t6/master/scripts/zm/zm_tomb/challenge.gsc) |
+| dev_tools | Debug HUD | [Download](https://raw.githubusercontent.com/maxvanasten/t6/master/scripts/zm/dev_tools.gsc) |
+| maxlib | General purpose library | [Download](https://raw.githubusercontent.com/maxvanasten/t6/master/scripts/zm/maxlib.gsc) |
+
 Mods are available as zip files in `./dist`:
 
 ## Installing mods
